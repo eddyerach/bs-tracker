@@ -60,22 +60,24 @@ while True:
         if cv.contourArea(cnt) > 5000: #en 13000 no genera bb para senorita claro. 
             x, y, w, h = cv.boundingRect(cnt)
             bbox_xywh = np.array([[x+(w/2),y+(h/2),w,h]])
-            print(bbox_xywh)
-            cv.rectangle(fgMask, (x,y), (x+w,y+h), (255, 0, 0) , 5)
-            cv.putText(fgMask, str(cv.contourArea(cnt)), (x+w,y+h),
-               cv.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
-    
-    out.write(fgMask)
-    #cv.imshow('cnts', fgMask)
+
             outputs_person = deepsort_person.update(
                             bbox_xywh, [0.5], frame)
-            print(outputs_person)
+            # print(outputs_person)
             if len(outputs_person) > 0:
                 bbox_xyxy_person = outputs_person[:, :4]
                 identities_person = outputs_person[:, -1]
             
                 frame = draw_boxes(
                     frame, bbox_xyxy_person, identities_person)
+            # print(bbox_xywh)
+            # cv.rectangle(fgMask, (x,y), (x+w,y+h), (255, 0, 0) , 5)
+                cv.putText(frame, str(cv.contourArea(cnt)), (x+w,y+h),
+                cv.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
+    
+    out.write(frame)
+    #cv.imshow('cnts', fgMask)
+            
 
 
     cv.imshow('cnts', frame)
