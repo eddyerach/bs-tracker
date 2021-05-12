@@ -15,12 +15,19 @@ if args.algo == 'LSBP':
 else:
     backSub = cv.createBackgroundSubtractorKNN()
     backSub.setDetectShadows(True) #Set shadows detection
-    backSub.setHistory(50) #Sets the number of last frames that affect the background mode
+    backSub.setHistory(40) #Sets the number of last frames that affect the background mode
+    backSub.setDist2Threshold(100)
     backSub.setShadowThreshold(0.5)
 capture = cv.VideoCapture(cv.samples.findFileOrKeep(args.input))
 if not capture.isOpened():
     print('Unable to open: ' + args.input)
     exit(0)
+
+frame_width = int(capture.get(3))
+frame_height = int(capture.get(4))
+
+out = cv.VideoWriter('outputProcessed.avi',cv.VideoWriter_fourcc('M','J','P','G'), 10, ( frame_width ,frame_height), 0)
+
 while True:
     ret, frame = capture.read()
     if frame is None:
@@ -32,7 +39,7 @@ while True:
     cv.putText(frame, str(capture.get(cv.CAP_PROP_POS_FRAMES)), (15, 15),
                cv.FONT_HERSHEY_SIMPLEX, 0.5 , (0,0,0))
 
-    kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE,(15,15))
+    kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE,(4,4))
 
     fgMask = cv.morphologyEx(fgMask, cv.MORPH_CLOSE, kernel)# 
     cnts = cv.findContours(fgMask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)[0]
@@ -40,11 +47,15 @@ while True:
     #cv.imshow('FG Mask', fgMask)
 
     for cnt in cnts:
-        if cv.contourArea(cnt) > 15000:
+        if cv.contourArea(cnt) > 5000: #en 13000 no genera bb para senorita claro. 
             x, y, w, h = cv.boundingRect(cnt)
             cv.rectangle(fgMask, (x,y), (x+w,y+h), (255, 0, 0) , 5)
-
-    cv.imshow('cnts', fgMask)
+            cv.putText(fgMask, str(cv.contourArea(cnt)), (x+w,y+h),
+               cv.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
+    
+    out.write(fgMask)
+    #cv.imshow('cnts', fgMask)
     keyboard = cv.waitKey(30)
+    
     if keyboard == 'q' or keyboard == 27:
         break
