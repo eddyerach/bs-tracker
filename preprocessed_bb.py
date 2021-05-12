@@ -32,7 +32,7 @@ if not capture.isOpened():
 frame_width = int(capture.get(3))
 frame_height = int(capture.get(4))
 
-out = cv.VideoWriter('outputProcessed.avi',cv.VideoWriter_fourcc('M','J','P','G'), 10, ( frame_width ,frame_height), 0)
+out = cv.VideoWriter('outputProcessed.avi',cv.VideoWriter_fourcc('M','J','P','G'), 10, ( frame_width ,frame_height), 1)
 cfg = get_config()
 cfg.merge_from_file("./deep_sort_pytorch/configs/yolov3.yaml")
 cfg.merge_from_file("./deep_sort_pytorch/configs/deep_sort.yaml")
