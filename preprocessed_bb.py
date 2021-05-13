@@ -20,9 +20,9 @@ if args.algo == 'LSBP':
     backSub = cv.bgsegm.createBackgroundSubtractorLSBP()
 else:
     backSub = cv.createBackgroundSubtractorKNN()
-    backSub.setDetectShadows(True) #Set shadows detection
+    backSub.setDetectShadows(False) #Set shadows detection
     backSub.setHistory(40) #Sets the number of last frames that affect the background mode
-    backSub.setDist2Threshold(100)
+    #backSub.setDist2Threshold(100)
     backSub.setShadowThreshold(0.5)
 capture = cv.VideoCapture(cv.samples.findFileOrKeep(args.input))
 if not capture.isOpened():
@@ -51,13 +51,13 @@ while True:
 
     kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE,(4,4))
 
-    fgMask = cv.morphologyEx(fgMask, cv.MORPH_CLOSE, kernel)# 
-    cnts = cv.findContours(fgMask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)[0]
+    #fgMask = cv.morphologyEx(fgMask, cv.MORPH_CLOSE, kernel)# 
+    cnts = cv.findContours(fgMask, cv.RETR_TREE, cv.CHAIN_APPROX_TC89_KCOS)[0]
     #cv.imshow('Frame', frame)
     #cv.imshow('FG Mask', fgMask)
 
     for cnt in cnts:
-        if cv.contourArea(cnt) > 5000: #en 13000 no genera bb para senorita claro. 
+        if cv.contourArea(cnt) > 7000: #en 13000 no genera bb para senorita claro. 
             x, y, w, h = cv.boundingRect(cnt)
             bbox_xywh = np.array([[x+(w/2),y+(h/2),w,h]])
 
