@@ -1,0 +1,3 @@
+Counting Results on video: forTest10s_infer.mp4
+total input count: 3
+total output count: 1
