@@ -45,7 +45,7 @@ cfg.merge_from_file("./deep_sort_pytorch/configs/yolov3.yaml")
 cfg.merge_from_file(args.config)
 deepsort_person = build_tracker(cfg, use_cuda=1)
 
-line_pos = ((99,368),(99,493))
+line_pos = ((37,368),(37,493))
 lc = Line_cross(line_pos)
 
 while True:
@@ -54,12 +54,12 @@ while True:
         break
     
     #Definir dimensiones ROI
-    #roiy = 136 #Y inicial
-    #roih = 480 #Altura
-    #roix = 0   #X inicial
-    #roiw = 595 #Ancho
+    roiy = 136 #Y inicial
+    roih = 480 #Altura
+    roix = 0   #X inicial
+    roiw = 595 #Ancho
     #print('size frame antes', frame.dtype)
-    #frame = frame[roiy:roiy+roih, roix:roix+roiw]
+    frame = frame[roiy:roiy+roih, roix:roix+roiw]
 
     fgMask = backSub.apply(frame)
     
