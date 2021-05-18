@@ -15,12 +15,15 @@ class Line_cross():
         line_x=self.coordenates[0][0]
         # print(f'value of point:{point}')
         point_x=point[0]
+        point_y=point[1]
         side=None
-
-        if line_x < point_x:
-            side="right"
-        elif line_x>point_x:
-            side="left"
+        offset = 5
+        if (point_x<=line_x+offset) and (point_x>=line_x-offset):
+            if (point_y<=self.coordenates[1][1]) and (point_y>=self.coordenates[0][1]):
+                if line_x < point_x:
+                    side="right"
+                elif line_x>point_x:
+                    side="left"
 
         return side 
     
@@ -38,18 +41,21 @@ class Line_cross():
     """ Method to count people in and people out. It iterates over a dictionary."""
     def count(self):
         for k, v in self.track.items():
-            if None in v:
-                v.remove(None)
                 
             if len(v) ==2 and k not in self.counted:
                 if v[0] == 'left' and v[1] == 'right':
                     self.count_salida += 1
                     self.counted.append(k)
-                    # del self.track[k]
+
                 elif  v[0] == 'right' and v[1] == 'left':
                     self.count_entrada += 1
                     self.counted.append(k)
-                    # del self.track[k]
+
+
+        for id in self.counted:
+            del self.track[id]
+        
+        self.counted = []
 
     def get_results(self, output_name):
         input_count = self.count_entrada

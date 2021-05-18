@@ -45,21 +45,26 @@ cfg.merge_from_file("./deep_sort_pytorch/configs/yolov3.yaml")
 cfg.merge_from_file(args.config)
 deepsort_person = build_tracker(cfg, use_cuda=1)
 
-line_pos = ((37,368),(37,493))
+#line_pos = ((37,368),(37,493))
+line_pos = ((104,368),(104,493))
 lc = Line_cross(line_pos)
-
+length = int(capture.get(cv.CAP_PROP_FRAME_COUNT)) #
+frames = 0
 while True:
     ret, frame = capture.read()
+    #frame_width = int(capture.get(3))
+    #frame_height = int(capture.get(4))
     if frame is None:
         break
-    
+    frames += 1    
+    print(f'status: {frames}/{length}\n')
     #Definir dimensiones ROI
-    roiy = 136 #Y inicial
-    roih = 480 #Altura
-    roix = 0   #X inicial
-    roiw = 595 #Ancho
+    #roiy = 136 #Y inicial
+    #roih = 480 #Altura
+    #roix = 0   #X inicial
+    #roiw = 595 #Ancho
     #print('size frame antes', frame.dtype)
-    frame = frame[roiy:roiy+roih, roix:roix+roiw]
+    #frame = frame[roiy:roiy+roih, roix:roix+roiw]
 
     fgMask = backSub.apply(frame)
     
@@ -133,7 +138,7 @@ while True:
                 if not id in lc.track:
                     lc.track[id] = []
                 
-                if directions[id] not in lc.track[id]:
+                if (directions[id] not in lc.track[id]) and (directions[id] != None):
                     lc.track[id].append(directions[id])
                 
             
